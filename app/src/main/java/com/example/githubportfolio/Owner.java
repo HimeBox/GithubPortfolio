@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Owner {
+    // Class that used to store the data grab from Github API, created by http://www.jsonschema2pojo.org/.
     @SerializedName("login")
     @Expose
     private String login;

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+// Adapter made by my self to add unit to ListView
 public class ButtonArrayAdapter extends BaseAdapter implements ListAdapter {
     private List<String> list = new ArrayList<String>();
     private List<String> link_list = new ArrayList<String>();
@@ -52,16 +53,17 @@ public class ButtonArrayAdapter extends BaseAdapter implements ListAdapter {
             view = inflater.inflate(R.layout.arraylist, null);
         }
 
-        //Handle TextView and display string from your list
+        // Handle TextView and display string from your list
         TextView listItemText = (TextView)view.findViewById(R.id.list_item_string);
         listItemText.setText(list.get(position));
 
-        //Handle buttons and add onClickListeners
+        // Handle buttons and add onClickListeners
         Button linkBtn = (Button)view.findViewById(R.id.link_btn);
 
         linkBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                // Open outside web browser when clicked.
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link_list.get(position)));
                 context.startActivity(browserIntent);
             }

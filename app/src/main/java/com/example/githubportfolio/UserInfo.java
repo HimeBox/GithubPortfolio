@@ -1,7 +1,7 @@
 package com.example.githubportfolio;
 
 public class UserInfo {
-
+    // Class that used to store the data grab from Github API, created by hand.
     private String login;
     private int id;
     private String node_id;
