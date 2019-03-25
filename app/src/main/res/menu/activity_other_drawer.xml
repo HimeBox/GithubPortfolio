@@ -20,13 +20,5 @@
             android:id="@+id/nav_following"
             android:icon="@drawable/ic_star_border_black_24dp"
             android:title="Following" />
-        <item
-            android:id="@+id/nav_follow"
-            android:icon="@drawable/ic_group_add_black_24dp"
-            android:title="Follow/Unfollow" />
-        <item
-            android:id="@+id/nav_star"
-            android:icon="@drawable/ic_star_border_black_24dp"
-            android:title="Star/Unstar" />
     </group>
 </menu>
