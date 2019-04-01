@@ -91,7 +91,7 @@ public class DataActivity extends AppCompatActivity
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-        String startDate = df.format(Calendar.getInstance().getTime());
+        startDate = df.format(Calendar.getInstance().getTime());
 
         runProfile();
     }
