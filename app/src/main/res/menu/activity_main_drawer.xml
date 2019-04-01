@@ -28,5 +28,13 @@
             android:id="@+id/nav_star"
             android:icon="@drawable/ic_star_border_black_24dp"
             android:title="Star/Unstar" />
+        <item
+            android:id="@+id/nav_search"
+            android:icon="@drawable/ic_search_black_24dp"
+            android:title="Search" />
+        <item
+            android:id="@+id/nav_notification"
+            android:icon="@drawable/ic_notifications_active_black_24dp"
+            android:title="Update Notifications" />
     </group>
 </menu>

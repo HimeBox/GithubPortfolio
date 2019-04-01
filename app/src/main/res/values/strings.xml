@@ -9,4 +9,5 @@
     <string name="Name">Name</string>
     <string name="title_activity_data">DataActivity</string>
     <string name="title_activity_follow">FollowActivity</string>
+    <string name="title_activity_repo">RepoActivity</string>
 </resources>

@@ -64,11 +64,12 @@ public class MainActivity extends AppCompatActivity {
                     AccessToken token =  response.body();
                     accessToken = token.getAccessToken();
                     sendMessage(accessToken);
+                    finish();
                 }
 
                 @Override
                 public void onFailure(Call<AccessToken> call, Throwable t) {
-
+                    finish();
                 }
             });
         }

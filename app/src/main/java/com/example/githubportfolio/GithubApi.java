@@ -1,5 +1,7 @@
 package com.example.githubportfolio;
 
+import android.app.Notification;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -71,6 +73,26 @@ public interface GithubApi {
             @Path("owner") String owner,
             @Path("repo") String repo,
             @Query("access_token") String accessToken
+    );
+
+    // GET request for notifications
+    @GET("/notifications")
+    Call<List<Notifications>> getNotifications(
+            @Query("since") String startDate,
+            @Query("before") String date,
+            @Query("access_token") String accessToken
+    );
+
+    // GET request for user search
+    @GET("/search/users")
+    Call<UserSearch> searchUser(
+            @Query("q") String input
+    );
+
+    // GET request for repo search
+    @GET("/search/repositories")
+    Call<RepoSearch> searchRepo(
+            @Query("q") String input
     );
 
     /* Request for other users */

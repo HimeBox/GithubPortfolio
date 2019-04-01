@@ -12,9 +12,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".RepoActivity"
+            android:label="@string/title_activity_repo"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".FollowActivity"
             android:label="@string/title_activity_follow"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".DataActivity"
             android:label="@string/title_activity_data"

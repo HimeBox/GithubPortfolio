@@ -1,8 +1,13 @@
 package com.example.githubportfolio;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -24,7 +29,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.koushikdutta.ion.Ion;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import retrofit2.Call;
@@ -36,13 +44,19 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class DataActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
+    public static final String EXTRA_MESSAGE2 = "com.example.myfirstapp.MESSAGE2";
+    public static final String EXTRA_MESSAGE3 = "com.example.myfirstapp.MESSAGE3";
+
     private TextView errorLog;
     private TextView repoErrorLog;
     private ListView repoList;
     private ListView followerList;
     private TextView followerErrorLog;
     private ListView followingList;
+    private ListView searchList;
     private TextView followingErrorLog;
+    private TextView searchErrorLog;
     private ImageView avatarImage;
     private TextView name;
     private TextView userName;
@@ -53,12 +67,15 @@ public class DataActivity extends AppCompatActivity
     private Button repoBtn;
     private Button followerBtn;
     private Button followingBtn;
+    private Button userButton;
+    private Button repoButton;
     public String accessToken;
     private TextView followUnfollowErrorLog;
     private TextView starErrorLog;
     public String username;
     public String owner;
     public String repo;
+    public String startDate;
 
     private DatabaseReference mDatabase;
 
@@ -72,6 +89,10 @@ public class DataActivity extends AppCompatActivity
         accessToken = message;
         FirebaseApp.initializeApp(this);
         mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        DateFormat df = new SimpleDateFormat("YYYY-MM-DDTHH:MM:SSZ");
+        String startDate = df.format(Calendar.getInstance().getTime());
+
         runProfile();
     }
 
@@ -577,6 +598,213 @@ public class DataActivity extends AppCompatActivity
         });
     }
 
+    public void runNotification() {
+
+        DateFormat df = new SimpleDateFormat("YYYY-MM-DDTHH:MM:SSZ");
+        String date = df.format(Calendar.getInstance().getTime());
+
+        Gson gson = new GsonBuilder()
+                .setDateFormat("YYYY-MM-DDTHH:MM:SSZ")
+                .create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://api.github.com")
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        GithubApi githubApi = retrofit.create(GithubApi.class);
+
+        Call<List<Notifications>> call = githubApi.getNotifications(startDate,date,accessToken); // Add user here!
+
+        call.enqueue(new Callback<List<Notifications>>() {
+            @Override
+            public void onResponse(Call<List<Notifications>> call, Response<List<Notifications>> response) {
+                // Handle the stuff like 404.
+                if(!response.isSuccessful()){
+                    return;
+                }
+
+                List<Notifications> notificationList = response.body();
+
+                // Loop through List to grab data.
+                for (Notifications noti : notificationList){
+                    String reason = "";
+                    String title = "";
+                    reason += noti.getReason();
+                    title += noti.getSubject().getTitle();
+
+                    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(DataActivity.this)
+                            .setSmallIcon(R.drawable.ic_notifications_active_black_24dp)
+                            .setContentTitle(reason)
+                            .setContentText(title);
+
+                    Intent notificationIntent = new Intent(DataActivity.this, DataActivity.class);
+                    PendingIntent contentIntent = PendingIntent.getActivity(DataActivity.this,0,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+                    mBuilder.setContentIntent(contentIntent);
+
+                    NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    manager.notify(0,mBuilder.build());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Notifications>> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    public void runSearch() {
+        setContentView(R.layout.activity_search);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        // The ListView item and a TextView for error log.
+        searchList = findViewById(R.id.search_list);
+        searchErrorLog = findViewById(R.id.search_error_log);
+        userButton = findViewById(R.id.search_user_btn);
+        repoButton = findViewById(R.id.search_repo_btn);
+
+        userButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                // Almost same thing to create object.
+                // This time use a List of created objects to keep track of data.
+
+                EditText searchInput = (EditText) findViewById(R.id.search_input);
+                String input = searchInput.getText().toString();
+
+                Gson gson = new GsonBuilder()
+                        .setDateFormat("YYYY-MM-DDTHH:MM:SSZ")
+                        .create();
+
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("https://api.github.com")
+                        .addConverterFactory(GsonConverterFactory.create(gson))
+                        .build();
+
+                GithubApi githubApi = retrofit.create(GithubApi.class);
+
+                Call<UserSearch> call = githubApi.searchUser(input); // Add user here!
+
+                call.enqueue(new Callback<UserSearch>() {
+                    @Override
+                    public void onResponse(Call<UserSearch> call, Response<UserSearch> response) {
+                        // Handle the stuff like 404.
+                        if(!response.isSuccessful()){
+                            searchErrorLog.setText("Code: " + response.code());
+                            return;
+                        }
+
+                        UserSearch result = response.body();
+                        List<String> data = new ArrayList<String>();
+                        List<String> links = new ArrayList<String>();
+                        List<UserItem> items = result.getItems();
+
+                        // Loop through List to grab data.
+                        for (UserItem item : items){
+                            String content = "";
+                            String link = "";
+                            content += item.getLogin();
+                            link += item.getHtmlUrl();
+                            data.add(content);
+                            links.add(link);
+                        }
+                        if(result == null) {
+                            searchErrorLog.setText("No Result Found!");
+                            return;
+                        }
+                        searchList.setAdapter(new ButtonArrayAdapter(data,links,DataActivity.this));
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserSearch> call, Throwable t) {
+                        // Handle the exception.
+                        searchErrorLog.setText(t.getMessage());
+                    }
+                });
+            }
+        });
+
+        repoButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                // Almost same thing to create object.
+                // This time use a List of created objects to keep track of data.
+
+                EditText searchInput = (EditText) findViewById(R.id.search_input);
+                String input = searchInput.getText().toString();
+
+                Gson gson = new GsonBuilder()
+                        .setDateFormat("YYYY-MM-DDTHH:MM:SSZ")
+                        .create();
+
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("https://api.github.com")
+                        .addConverterFactory(GsonConverterFactory.create(gson))
+                        .build();
+
+                GithubApi githubApi = retrofit.create(GithubApi.class);
+
+                Call<RepoSearch> call = githubApi.searchRepo(input); // Add user here!
+
+                call.enqueue(new Callback<RepoSearch>() {
+                    @Override
+                    public void onResponse(Call<RepoSearch> call, Response<RepoSearch> response) {
+                        // Handle the stuff like 404.
+                        if(!response.isSuccessful()){
+                            searchErrorLog.setText("Code: " + response.code());
+                            return;
+                        }
+
+                        RepoSearch result = response.body();
+                        List<String> names = new ArrayList<String>();
+                        List<String> infos = new ArrayList<String>();
+                        List<String> others = new ArrayList<String>();
+                        List<RepoItem> items = result.getItems();
+
+                        // Loop through List to grab data.
+                        for (RepoItem item : items){
+                            String name = "";
+                            String info = "";
+                            String other = "";
+                            name += item.getName();
+                            info += item.getDescription();
+                            other += "Number of stargazers: " + item.getStargazersCount() + "\n";
+                            other += "Number of watchers: " + item.getWatchersCount() + "\n";
+                            other += "Number of forks: "+ item.getForksCount();
+                            names.add(name);
+                            infos.add(info);
+                            others.add(other);
+                        }
+                        if(result == null) {
+                            searchErrorLog.setText("No Result Found!");
+                            return;
+                        }
+                        searchList.setAdapter(new RepoVisualAdapter(names,infos,others,DataActivity.this));
+                    }
+
+                    @Override
+                    public void onFailure(Call<RepoSearch> call, Throwable t) {
+                        // Handle the exception.
+                        searchErrorLog.setText(t.getMessage());
+                    }
+                });
+            }
+        });
+
+    }
+
     public void repoPressed(View view){
         runRepo();
     }
@@ -633,6 +861,10 @@ public class DataActivity extends AppCompatActivity
             runFollowUnfollow();
         } else if (id == R.id.nav_star) {
             runStar();
+        } else if (id == R.id.nav_search) {
+            runSearch();
+        } else if (id == R.id.nav_notification) {
+            runNotification();
         }
 
         // The lines below are actually useless at that moment. As the selection navigate to new layout and refresh the page itself, the drawer will never stay in pop out status at that point.
