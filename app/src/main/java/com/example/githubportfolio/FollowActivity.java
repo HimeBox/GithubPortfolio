@@ -56,7 +56,7 @@ public class FollowActivity extends AppCompatActivity
         // Set the initial view (loadout) to activity_main
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        user = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+        user = intent.getStringExtra(MainActivity.EXTRA_MESSAGE0);
         runProfile(user);
     }
 

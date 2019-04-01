@@ -19,7 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
+    public static final String EXTRA_MESSAGE0 = "com.example.myfirstapp.MESSAGE";
 
     // The OAuth stuff:
     private String clientId = "cef9cc2fcdb5dc06cd89";
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void sendMessage(String message) {
         Intent intent = new Intent(this, DataActivity.class);
-        intent.putExtra(EXTRA_MESSAGE, message);
+        intent.putExtra(EXTRA_MESSAGE0, message);
         startActivity(intent);
     }
 }

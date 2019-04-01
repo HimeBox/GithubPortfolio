@@ -85,12 +85,12 @@ public class DataActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+        String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE0);
         accessToken = message;
         FirebaseApp.initializeApp(this);
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        DateFormat df = new SimpleDateFormat("YYYY-MM-DDTHH:MM:SSZ");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
         String startDate = df.format(Calendar.getInstance().getTime());
 
         runProfile();
@@ -600,11 +600,11 @@ public class DataActivity extends AppCompatActivity
 
     public void runNotification() {
 
-        DateFormat df = new SimpleDateFormat("YYYY-MM-DDTHH:MM:SSZ");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
         String date = df.format(Calendar.getInstance().getTime());
 
         Gson gson = new GsonBuilder()
-                .setDateFormat("YYYY-MM-DDTHH:MM:SSZ")
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -685,7 +685,7 @@ public class DataActivity extends AppCompatActivity
                 String input = searchInput.getText().toString();
 
                 Gson gson = new GsonBuilder()
-                        .setDateFormat("YYYY-MM-DDTHH:MM:SSZ")
+                        .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
                         .create();
 
                 Retrofit retrofit = new Retrofit.Builder()
@@ -746,7 +746,7 @@ public class DataActivity extends AppCompatActivity
                 String input = searchInput.getText().toString();
 
                 Gson gson = new GsonBuilder()
-                        .setDateFormat("YYYY-MM-DDTHH:MM:SSZ")
+                        .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
                         .create();
 
                 Retrofit retrofit = new Retrofit.Builder()

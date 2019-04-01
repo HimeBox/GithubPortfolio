@@ -28,8 +28,8 @@ public class RepoActivity extends AppCompatActivity {
         TextView info = findViewById(R.id.new_info);
         TextView other = findViewById(R.id.new_other);
         title.setText(title_message);
-        title.setText(info_message);
-        title.setText(other_message);
+        info.setText(info_message);
+        other.setText(other_message);
 
     }
 
